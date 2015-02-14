@@ -1,0 +1,52 @@
+<idea-plugin version="2">
+  <id>be.wendelen.daan.dto-generator</id>
+  <name>DTO Generator</name>
+  <version>1.0</version>
+  <vendor email="daanwendelen@gmail.com">Daan Wendelen</vendor>
+
+  <description><![CDATA[
+    A plugin to generate a Data Transfer Object (DTO) and a Mapper based on a class.
+    The user selects which fields (s)he would like in the DTO and the plugin generates
+    the DTO, a mapper and unit-test for the mapper and DTO.
+    ]]></description>
+
+  <change-notes><![CDATA[
+   ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="131"/>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+
+      <action id="GenerateDTO" class="be.wendelen.daan.dtoGenerator.action.GenerateDTO" text="GenerateDTO"
+              description="Generate DTO">
+          <add-to-group group-id="GenerateGroup" anchor="first"/>
+      </action>
+  </actions>
+
+    <module-components>
+        <component>
+            <implementation-class>be.wendelen.daan.dtoGenerator.Test</implementation-class>
+        </component>
+    </module-components>
+</idea-plugin>
