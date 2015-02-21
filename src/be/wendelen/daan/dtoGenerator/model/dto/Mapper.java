@@ -10,8 +10,8 @@ public class Mapper extends AbstractClass {
     private Class from;
     private DTO to;
 
-    public Mapper(String name, Class from, DTO to) {
-        super(name);
+    public Mapper(String name, String pkg, Class from, DTO to) {
+        super(name, pkg);
         this.from = from;
         this.to = to;
     }

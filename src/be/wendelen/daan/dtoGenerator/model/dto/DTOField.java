@@ -1,16 +1,17 @@
 package be.wendelen.daan.dtoGenerator.model.dto;
 
 import be.wendelen.daan.dtoGenerator.model.ast.*;
+import be.wendelen.daan.dtoGenerator.util.ClassUtil;
 
 public class DTOField implements Field {
-    private Field field;
+    private Method method;
     private Method getter;
     private Method setter;
 
-    public DTOField(Field field) {
-        this.field = field;
-        this.getter = new PublicGetter(field);
-        this.setter = new PublicSetter(field);
+    public DTOField(Method method) {
+        this.method = method;
+        this.getter = new PublicGetter(this);
+        this.setter = new PublicSetter(this);
     }
 
     public Method getGetter() {
@@ -23,12 +24,12 @@ public class DTOField implements Field {
 
     @Override
     public Type getReturnType() {
-        return field.getReturnType();
+        return method.getReturnType();
     }
 
     @Override
     public AccessModifier getAccessModifier() {
-        return field.getAccessModifier();
+        return AccessModifier.PRIVATE;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class DTOField implements Field {
 
     @Override
     public String getName() {
-        return field.getName();
+        return ClassUtil.getFieldName(method);
     }
 
     @Override
@@ -49,5 +50,9 @@ public class DTOField implements Field {
     @Override
     public boolean isFinal() {
         return false;
+    }
+
+    public Method getCorrespondingMethod() {
+        return method;
     }
 }

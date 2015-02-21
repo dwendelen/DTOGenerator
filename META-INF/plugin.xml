@@ -45,8 +45,5 @@
   </actions>
 
     <module-components>
-        <component>
-            <implementation-class>be.wendelen.daan.dtoGenerator.Test</implementation-class>
-        </component>
     </module-components>
 </idea-plugin>

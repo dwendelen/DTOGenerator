@@ -44,7 +44,7 @@ public class PublicGetter implements Method {
     @Override
     public String getName() {
         String capitalizedFieldName = StringUtil.capitalize(field.getName());
-        if("boolean".equals(field.getReturnType().getName())) {
+        if("boolean".equals(field.getReturnType().getQualifiedName())) {
             return "is" + capitalizedFieldName;
         } else {
             return "get" + capitalizedFieldName;

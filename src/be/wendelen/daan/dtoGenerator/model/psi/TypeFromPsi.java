@@ -12,7 +12,7 @@ public class TypeFromPsi implements Type {
     }
 
     @Override
-    public String getName() {
+    public String getQualifiedName() {
         return psiType.getCanonicalText();
     }
 }

@@ -9,5 +9,5 @@ public interface Class extends ClassMember, Type {
     public List<? extends Method> getMethods();
     public List<? extends Field> getFields();
 
-
+    public String getQualifiedName();
 }

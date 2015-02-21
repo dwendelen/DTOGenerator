@@ -1,5 +1,6 @@
 package be.wendelen.daan.dtoGenerator.util;
 
+import be.wendelen.daan.dtoGenerator.model.ast.Method;
 import com.intellij.openapi.util.text.StringUtil;
 import be.wendelen.daan.dtoGenerator.model.ast.Class;
 
@@ -11,7 +12,7 @@ public class ClassUtil {
         return StringUtil.decapitalize(pieces.get(pieces.size() - 1));
     }
     public static void generateDeclaration(StringBuilder stringBuilder, Class aClass) {
-        stringBuilder.append(aClass.getName());
+        stringBuilder.append(aClass.getQualifiedName());
         stringBuilder.append(" ");
         stringBuilder.append(getInstanceName(aClass));
         stringBuilder.append(" = ");
@@ -19,7 +20,23 @@ public class ClassUtil {
     public static void generateInitialisation(StringBuilder stringBuilder, Class aClass) {
         generateDeclaration(stringBuilder, aClass);
         stringBuilder.append("new ");
-        stringBuilder.append(aClass.getName());
+        stringBuilder.append(aClass.getQualifiedName());
         stringBuilder.append("();\n");
+    }
+
+    public static String getFieldName(Method method) {
+        String name = method.getName();
+
+        if(name.startsWith("get")) {
+            return name.substring(3);
+        }
+
+        if("boolean".equals(method.getReturnType().getQualifiedName())) {
+            if(name.startsWith("is")) {
+                return name.substring(2);
+            }
+        }
+
+        return name;
     }
 }

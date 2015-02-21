@@ -1,56 +1,78 @@
 package be.wendelen.daan.dtoGenerator.action;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.ide.highlighter.JavaClassFileType;
-import com.intellij.ide.util.TreeClassChooser;
-import com.intellij.ide.util.TreeClassChooserFactory;
-import com.intellij.openapi.fileTypes.FileType;
+import be.wendelen.daan.dtoGenerator.generator.GenerationConfiguration;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.ui.ComboboxWithBrowseButton;
-import com.intellij.ui.StringComboboxEditor;
-import com.intellij.ui.TextFieldWithAutoCompletion;
+import com.intellij.psi.*;
+import com.intellij.psi.util.PsiUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 /**
  * Created by xtrit on 2015-02-14.
  */
 public class Dia extends DialogWrapper {
     private Project project;
+    private PsiClass psiClassFromContext;
 
-    protected Dia(@Nullable Project project) {
+    private ClassSelector classSelector;
+    private PackageSelector dtoPackageSelector;
+    private PackageSelector mapperPackageSelector;
+    private JTextField dtoNameTextField;
+    private JTextField mapperNameTextField;
+    private JCheckBox generateMapperTest;
+
+    protected Dia(@Nullable Project project, PsiClass psiClassFromContext) {
         super(project);
         this.project = project;
+        this.psiClassFromContext = psiClassFromContext;
         init();
+    }
+
+    public GenerationConfiguration getGenerationConfiguration() {
+        GenerationConfiguration generationConfiguration = new GenerationConfiguration();
+        generationConfiguration.from = classSelector.getSelectedClass();
+        generationConfiguration.dtoClassName = dtoNameTextField.getText();
+        generationConfiguration.dtoPackage = dtoPackageSelector.getSelectedPackage();
+        generationConfiguration.mapperClassName = mapperNameTextField.getText();
+        generationConfiguration.mapperPackage = mapperPackageSelector.getSelectedPackage();
+        generationConfiguration.methods = Arrays.asList(generationConfiguration.from.getMethods());
+        generationConfiguration.generateMapperTest = generateMapperTest.isSelected();
+        return generationConfiguration;
     }
 
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
+        String packageName = ((PsiJavaFile)psiClassFromContext.getContainingFile()).getPackageName();
+        PsiPackage psiPackage = JavaPsiFacade.getInstance(project).findPackage(packageName);
 
-        /*ComboBox box = new ComboBox();
-        StringComboboxEditor e = new StringComboboxEditor(project, JavaClassFileType.INSTANCE, box);
+        classSelector = new ClassSelector(project, psiClassFromContext);
+        dtoPackageSelector = new PackageSelector(project, psiPackage);
+        mapperPackageSelector = new PackageSelector(project, psiPackage);
 
-        JComboBox b = new JComboBox();
-        ComboboxWithBrowseButton c = new ComboboxWithBrowseButton(b);
-        c.addBrowseFolderListener();
-        ComponentWithBrowseButton co = new ComboboxWithBrowseButton(b,  new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                TreeClassChooser test = TreeClassChooserFactory.getInstance(project).createProjectScopeChooser("Test");
-                test.showDialog();
-                b.
-            }
-        });
+        dtoNameTextField = new JTextField();
+        mapperNameTextField = new JTextField();
+        generateMapperTest = new JCheckBox();
+        DialogContentFactory dialogContentFactory = DialogContentFactory.newDialogContent()
+                .withClassSelector(classSelector)
+                .withDtoPackageSelector(dtoPackageSelector)
+                .withMapperPackageSelector(mapperPackageSelector)
+                .withDtoNameTextField(dtoNameTextField)
+                .withMapperNameTextField(mapperNameTextField)
+                .withGenerateMapperTest(generateMapperTest)
+                .build();
 
-        return textFieldWithBrowseButton;*/
-        return null;
+        return dialogContentFactory.createContent();
     }
+
+    public PsiClass getFrom() {
+        return classSelector.getSelectedClass();
+    }
+
+    /*public String getDTOName() {
+        return DTOName;
+    }*/
 }

@@ -9,9 +9,11 @@ import java.util.List;
 public abstract class AbstractClass implements Class {
 
     private String name;
+    private String pkg;
 
-    protected AbstractClass(String name) {
+    protected AbstractClass(String name, String pkg) {
         this.name = name;
+        this.pkg = pkg;
     }
 
     @Override
@@ -34,5 +36,9 @@ public abstract class AbstractClass implements Class {
 
     public void generateInitialisation(StringBuilder stringBuilder) {
         ClassUtil.generateInitialisation(stringBuilder, this);
+    }
+
+    public String getQualifiedName() {
+        return pkg + "." + getName();
     }
 }

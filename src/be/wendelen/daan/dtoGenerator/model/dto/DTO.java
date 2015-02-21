@@ -9,10 +9,10 @@ public class DTO extends AbstractClass {
 
     private List<DTOField> fields = new LinkedList<DTOField>();
 
-    public DTO(String name, List<Field> fields) {
-        super(name);
-        for (Field field : fields) {
-            this.fields.add(new DTOField(field));
+    public DTO(String name, String pkg, List<Method> methods) {
+        super(name, pkg);
+        for (Method method : methods) {
+            this.fields.add(new DTOField(method));
         }
     }
 

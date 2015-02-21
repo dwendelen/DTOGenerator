@@ -10,7 +10,7 @@ public class TypeRenderer {
     }
 
     public void render(Type type) {
-        stringBuilder.append(type.getName());
+        stringBuilder.append(type.getQualifiedName());
     }
 
     public StringBuilder getStringBuilder() {

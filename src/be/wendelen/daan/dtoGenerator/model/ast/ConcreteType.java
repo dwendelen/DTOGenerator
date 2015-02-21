@@ -9,7 +9,7 @@ public class ConcreteType implements Type {
     }
 
     @Override
-    public String getName() {
+    public String getQualifiedName() {
         return name;
     }
 }

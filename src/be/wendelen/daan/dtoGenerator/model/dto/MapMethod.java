@@ -54,7 +54,7 @@ public class MapMethod implements Method {
             stringBuilder.append("(");
             stringBuilder.append(fromInstanceName);
             stringBuilder.append(".");
-            stringBuilder.append(field.getGetter().getName());
+            stringBuilder.append(field.getCorrespondingMethod().getName());
             stringBuilder.append("());\n");
         }
         stringBuilder.append("return ");

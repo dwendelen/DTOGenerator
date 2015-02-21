@@ -3,6 +3,7 @@ package be.wendelen.daan.dtoGenerator.model.psi;
 import be.wendelen.daan.dtoGenerator.model.ast.*;
 import be.wendelen.daan.dtoGenerator.model.ast.Class;
 import be.wendelen.daan.dtoGenerator.model.dto.DTOField;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
@@ -66,6 +67,11 @@ public class ClassFromPsi extends ClassMemberFromPsi implements Class {
 
     @Override
     public String getName() {
+        return psiClass.getName();
+    }
+
+    @Override
+    public String getQualifiedName() {
         return psiClass.getQualifiedName();
     }
 }

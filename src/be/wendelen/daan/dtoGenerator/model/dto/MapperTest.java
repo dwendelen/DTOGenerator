@@ -10,8 +10,8 @@ import java.util.List;
 public class MapperTest extends AbstractClass {
     private Mapper mapper;
 
-    public MapperTest(String name, Mapper mapper) {
-        super(name);
+    public MapperTest(String name, String pkg, Mapper mapper) {
+        super(name, pkg);
         this.mapper = mapper;
     }
 
