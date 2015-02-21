@@ -1,21 +1,18 @@
-package be.wendelen.daan.dtoGenerator.action;
+package be.wendelen.daan.dtoGenerator.ui;
 
 import be.wendelen.daan.dtoGenerator.generator.GenerationConfiguration;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Arrays;
 
-/**
- * Created by xtrit on 2015-02-14.
- */
-public class Dia extends DialogWrapper {
+public class Dialog extends DialogWrapper {
     private Project project;
     private PsiClass psiClassFromContext;
+    private boolean enableTests = true;
 
     private ClassSelector classSelector;
     private PackageSelector dtoPackageSelector;
@@ -24,11 +21,10 @@ public class Dia extends DialogWrapper {
     private JTextField mapperNameTextField;
     private JCheckBox generateMapperTest;
 
-    protected Dia(@Nullable Project project, PsiClass psiClassFromContext) {
+    public Dialog(@Nullable Project project, PsiClass psiClassFromContext) {
         super(project);
         this.project = project;
         this.psiClassFromContext = psiClassFromContext;
-        init();
     }
 
     public GenerationConfiguration getGenerationConfiguration() {
@@ -41,6 +37,11 @@ public class Dia extends DialogWrapper {
         generationConfiguration.methods = Arrays.asList(generationConfiguration.from.getMethods());
         generationConfiguration.generateMapperTest = generateMapperTest.isSelected();
         return generationConfiguration;
+    }
+
+    public void show() {
+        init();
+        super.show();
     }
 
     @Nullable
@@ -56,6 +57,8 @@ public class Dia extends DialogWrapper {
         dtoNameTextField = new JTextField();
         mapperNameTextField = new JTextField();
         generateMapperTest = new JCheckBox();
+        generateMapperTest.setSelected(enableTests);
+
         DialogContentFactory dialogContentFactory = DialogContentFactory.newDialogContent()
                 .withClassSelector(classSelector)
                 .withDtoPackageSelector(dtoPackageSelector)
@@ -65,14 +68,10 @@ public class Dia extends DialogWrapper {
                 .withGenerateMapperTest(generateMapperTest)
                 .build();
 
-        return dialogContentFactory.createContent();
+        return dialogContentFactory.createContent(enableTests);
     }
 
-    public PsiClass getFrom() {
-        return classSelector.getSelectedClass();
+    public void disableTests() {
+        enableTests = false;
     }
-
-    /*public String getDTOName() {
-        return DTOName;
-    }*/
 }

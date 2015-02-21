@@ -1,11 +1,10 @@
-package be.wendelen.daan.dtoGenerator.action;
+package be.wendelen.daan.dtoGenerator.ui;
 
 import com.intellij.ide.util.TreeClassChooser;
 import com.intellij.ide.util.TreeClassChooserFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.psi.PsiClass;
-import com.intellij.ui.TextFieldWithHistoryWithBrowseButton;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

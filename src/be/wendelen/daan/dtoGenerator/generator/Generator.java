@@ -34,21 +34,26 @@ public class Generator {
             public void run() {
                 List<Method> fields = methodFromPsiFactory.createList(generationConfiguration.methods);
 
-                DTO dto = new DTO(generationConfiguration.dtoClassName,
+                DTO dto = new DTO(
+                        generationConfiguration.dtoClassName,
                         generationConfiguration.dtoPackage.getQualifiedName(),
                         fields);
                 addClass(dto, generationConfiguration.dtoPackage, false, generationConfiguration);
 
                 Class from = classFromPsiFactory.create(generationConfiguration.from);
-                Mapper mapper = new Mapper(generationConfiguration.mapperClassName,
+                Mapper mapper = new Mapper(
+                        generationConfiguration.mapperClassName,
                         generationConfiguration.mapperPackage.getQualifiedName(),
                         from, dto);
                 addClass(mapper, generationConfiguration.mapperPackage, false, generationConfiguration);
 
-                MapperTest mapperTest = new MapperTest(generationConfiguration.mapperTestName,
-                        generationConfiguration.mapperPackage.getQualifiedName(),
-                        mapper);
-                addClass(mapperTest, generationConfiguration.mapperPackage, true, generationConfiguration);
+                if(generationConfiguration.generateMapperTest) {
+                    MapperTest mapperTest = new MapperTest(
+                            generationConfiguration.mapperTestName,
+                            generationConfiguration.mapperPackage.getQualifiedName(),
+                            mapper);
+                    addClass(mapperTest, generationConfiguration.mapperPackage, true, generationConfiguration);
+                }
             }
         }.execute();
     }

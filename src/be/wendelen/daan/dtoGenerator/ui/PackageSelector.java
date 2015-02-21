@@ -1,4 +1,4 @@
-package be.wendelen.daan.dtoGenerator.action;
+package be.wendelen.daan.dtoGenerator.ui;
 
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.openapi.project.Project;
@@ -23,10 +23,8 @@ public class PackageSelector extends TextFieldWithBrowseButton {
         addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
                 PackageChooserDialog packageChooserDialog =
                         new PackageChooserDialog("titel", project);
-
                 packageChooserDialog.show();
 
                 if (packageChooserDialog.getSelectedPackage() != null) {

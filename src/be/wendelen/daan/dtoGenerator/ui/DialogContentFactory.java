@@ -1,6 +1,4 @@
-package be.wendelen.daan.dtoGenerator.action;
-
-import com.intellij.util.ui.CheckBox;
+package be.wendelen.daan.dtoGenerator.ui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +16,7 @@ public class DialogContentFactory {
 
     private DialogContentFactory(){}
 
-    public JComponent createContent() {
+    public JComponent createContent(boolean enableTests) {
 
         jPanel.setLayout(gridLayout);
         jPanel.setPreferredSize(new Dimension(600, 400));
@@ -42,7 +40,10 @@ public class DialogContentFactory {
         addRight(mapperPackageSelector);
 
         generateMapperTest.setText("Generate test for mapper.");
-        generateMapperTest.setSelected(true);
+        generateMapperTest.setSelected(enableTests);
+        if(!enableTests) {
+            generateMapperTest.setEnabled(false);
+        }
         addTwoColumn(generateMapperTest);
 
         return jPanel;
