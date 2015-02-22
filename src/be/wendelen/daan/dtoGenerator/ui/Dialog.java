@@ -1,6 +1,7 @@
 package be.wendelen.daan.dtoGenerator.ui;
 
 import be.wendelen.daan.dtoGenerator.generator.GenerationConfiguration;
+import be.wendelen.daan.dtoGenerator.util.ClassUtil;
 import com.intellij.ide.util.DefaultPsiElementCellRenderer;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -118,6 +119,7 @@ public class Dialog extends DialogWrapper {
         DefaultPsiElementCellRenderer cellRenderer = new DefaultPsiElementCellRenderer();
         methodList.setCellRenderer(cellRenderer);
         methodList.setSelectionInterval(0, methods.getSize() - 1);
+        methodList.setSelectedIndices(getIndicesOfGetters(filteredMethods));
 
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(methodList);
         decorator.disableAddAction();
@@ -138,6 +140,26 @@ public class Dialog extends DialogWrapper {
             result.add(method);
         }
         return result;
+    }
+
+    private int[] getIndicesOfGetters(List<PsiMethod> psiMethods) {
+        List<Integer> res = new LinkedList<Integer>();
+        for (int i = 0; i < psiMethods.size(); i++) {
+            PsiMethod method = psiMethods.get(i);
+            if(ClassUtil.isGetter(method)) {
+                if("getClass".equals(method.getName())) {
+                    continue;
+                }
+                res.add(i);
+            }
+        }
+
+        int[] r = new int[res.size()];
+        for (int i = 0; i < res.size(); i++) {
+            r[i] = res.get(i);
+        }
+
+        return r;
     }
 
     private PsiPackage getPackage(PsiClass aClass) {
