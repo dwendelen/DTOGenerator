@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Dialog extends DialogWrapper {
     private Project project;
@@ -109,7 +111,8 @@ public class Dialog extends DialogWrapper {
     }
 
     private JComponent createMethodList(PsiClass aClass) {
-        CollectionListModel<PsiMethod> methods = new CollectionListModel<PsiMethod>(aClass.getAllMethods());
+        List<PsiMethod> filteredMethods = filterMethods(aClass.getAllMethods());
+        CollectionListModel<PsiMethod> methods = new CollectionListModel<PsiMethod>(filteredMethods);
 
         methodList = new JBList(methods);
         DefaultPsiElementCellRenderer cellRenderer = new DefaultPsiElementCellRenderer();
@@ -119,6 +122,22 @@ public class Dialog extends DialogWrapper {
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(methodList);
         decorator.disableAddAction();
         return decorator.createPanel();
+    }
+
+    private List<PsiMethod> filterMethods(PsiMethod[] methods) {
+        LinkedList<PsiMethod> result = new LinkedList<PsiMethod>();
+        for (PsiMethod method : methods) {
+            if(method.getReturnType() == null) {
+                continue;
+            }
+
+            if("void".equals(method.getReturnType().getCanonicalText())) {
+                continue;
+            }
+
+            result.add(method);
+        }
+        return result;
     }
 
     private PsiPackage getPackage(PsiClass aClass) {
