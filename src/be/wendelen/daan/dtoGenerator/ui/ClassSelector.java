@@ -8,14 +8,21 @@ import com.intellij.psi.PsiClass;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ClassSelector extends TextFieldWithBrowseButton {
     private final Project project;
     private PsiClass selectedClass;
+    private List<ClassSelectorListener> listeners = new LinkedList<ClassSelectorListener>();
 
     public ClassSelector(Project project, PsiClass selectedClass) {
         this.project = project;
         setSelectedClass(selectedClass);
+    }
+
+    public void addListener(ClassSelectorListener listener) {
+        listeners.add(listener);
     }
 
     public void init() {
@@ -24,9 +31,10 @@ public class ClassSelector extends TextFieldWithBrowseButton {
         addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                TreeClassChooser
-                classChooser = TreeClassChooserFactory.getInstance(project)
+                TreeClassChooser classChooser = TreeClassChooserFactory.getInstance(project)
                         .createProjectScopeChooser("Test");
+                classChooser.select(getSelectedClass());
+
                 classChooser.showDialog();
                 if (classChooser.getSelected() != null) {
                     setSelectedClass(classChooser.getSelected());
@@ -37,6 +45,9 @@ public class ClassSelector extends TextFieldWithBrowseButton {
 
     private void selectedClassChanged() {
         getChildComponent().setText(selectedClass.getQualifiedName());
+        for (ClassSelectorListener listener : listeners) {
+            listener.classSelected(selectedClass);
+        }
     }
 
     private void classUnselected() {

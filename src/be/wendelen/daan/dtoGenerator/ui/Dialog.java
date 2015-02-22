@@ -7,6 +7,8 @@ import com.intellij.psi.*;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 public class Dialog extends DialogWrapper {
@@ -47,15 +49,24 @@ public class Dialog extends DialogWrapper {
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
-        String packageName = ((PsiJavaFile)psiClassFromContext.getContainingFile()).getPackageName();
-        PsiPackage psiPackage = JavaPsiFacade.getInstance(project).findPackage(packageName);
+        PsiPackage psiPackage = getPackage(psiClassFromContext);
 
         classSelector = new ClassSelector(project, psiClassFromContext);
+        classSelector.addListener(new ClassSelectorListener() {
+            @Override
+            public void classSelected(PsiClass psiClass) {
+                setText(dtoNameTextField, "DTO", psiClass);
+                setText(mapperNameTextField, "Mapper", psiClass);
+                dtoPackageSelector.setSelectedPackage(getPackage(psiClass));
+                mapperPackageSelector.setSelectedPackage(getPackage(psiClass));
+            }
+        });
+
         dtoPackageSelector = new PackageSelector(project, psiPackage);
         mapperPackageSelector = new PackageSelector(project, psiPackage);
 
-        dtoNameTextField = new JTextField();
-        mapperNameTextField = new JTextField();
+        dtoNameTextField = createTextField("DTO");
+        mapperNameTextField = createTextField("Mapper");
         generateMapperTest = new JCheckBox();
         generateMapperTest.setSelected(enableTests);
 
@@ -73,5 +84,24 @@ public class Dialog extends DialogWrapper {
 
     public void disableTests() {
         enableTests = false;
+    }
+
+    private JTextField createTextField(String appendToClassName) {
+        JTextField textField = new JTextField();
+        setText(textField, appendToClassName, psiClassFromContext);
+        return textField;
+    }
+
+    private void setText(JTextField textField, String appendToClassName, PsiClass selectedClass) {
+        if(selectedClass == null) {
+            return;
+        }
+
+        textField.setText(selectedClass.getName() + appendToClassName);
+    }
+
+    private PsiPackage getPackage(PsiClass aClass) {
+        String packageName = ((PsiJavaFile)aClass.getContainingFile()).getPackageName();
+        return JavaPsiFacade.getInstance(project).findPackage(packageName);
     }
 }

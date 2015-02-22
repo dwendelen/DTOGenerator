@@ -2,6 +2,7 @@ package be.wendelen.daan.dtoGenerator.ui;
 
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.PackageChooser;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.psi.PsiPackage;
 
@@ -25,6 +26,7 @@ public class PackageSelector extends TextFieldWithBrowseButton {
             public void actionPerformed(ActionEvent actionEvent) {
                 PackageChooserDialog packageChooserDialog =
                         new PackageChooserDialog("titel", project);
+                packageChooserDialog.selectPackage(selectedPackage.getQualifiedName());
                 packageChooserDialog.show();
 
                 if (packageChooserDialog.getSelectedPackage() != null) {
@@ -42,7 +44,7 @@ public class PackageSelector extends TextFieldWithBrowseButton {
         getChildComponent().setText("");
     }
 
-    private void setSelectedPackage(PsiPackage selectedPackage) {
+    public void setSelectedPackage(PsiPackage selectedPackage) {
         this.selectedPackage = selectedPackage;
         if(selectedPackage == null) {
             packageUnselected();
