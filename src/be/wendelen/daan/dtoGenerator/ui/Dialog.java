@@ -1,9 +1,13 @@
 package be.wendelen.daan.dtoGenerator.ui;
 
 import be.wendelen.daan.dtoGenerator.generator.GenerationConfiguration;
+import com.intellij.ide.util.DefaultPsiElementCellRenderer;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.psi.*;
+import com.intellij.ui.CollectionListModel;
+import com.intellij.ui.ToolbarDecorator;
+import com.intellij.ui.components.JBList;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -22,6 +26,7 @@ public class Dialog extends DialogWrapper {
     private JTextField dtoNameTextField;
     private JTextField mapperNameTextField;
     private JCheckBox generateMapperTest;
+    private JBList methodList;
 
     public Dialog(@Nullable Project project, PsiClass psiClassFromContext) {
         super(project);
@@ -36,7 +41,7 @@ public class Dialog extends DialogWrapper {
         generationConfiguration.dtoPackage = dtoPackageSelector.getSelectedPackage();
         generationConfiguration.mapperClassName = mapperNameTextField.getText();
         generationConfiguration.mapperPackage = mapperPackageSelector.getSelectedPackage();
-        generationConfiguration.methods = Arrays.asList(generationConfiguration.from.getMethods());
+        generationConfiguration.methods = methodList.getSelectedValuesList();
         generationConfiguration.generateMapperTest = generateMapperTest.isSelected();
         return generationConfiguration;
     }
@@ -70,6 +75,8 @@ public class Dialog extends DialogWrapper {
         generateMapperTest = new JCheckBox();
         generateMapperTest.setSelected(enableTests);
 
+        JComponent methodSelector = createMethodList(psiClassFromContext);
+
         DialogContentFactory dialogContentFactory = DialogContentFactory.newDialogContent()
                 .withClassSelector(classSelector)
                 .withDtoPackageSelector(dtoPackageSelector)
@@ -77,6 +84,7 @@ public class Dialog extends DialogWrapper {
                 .withDtoNameTextField(dtoNameTextField)
                 .withMapperNameTextField(mapperNameTextField)
                 .withGenerateMapperTest(generateMapperTest)
+                .withMethodSelector(methodSelector)
                 .build();
 
         return dialogContentFactory.createContent(enableTests);
@@ -93,15 +101,28 @@ public class Dialog extends DialogWrapper {
     }
 
     private void setText(JTextField textField, String appendToClassName, PsiClass selectedClass) {
-        if(selectedClass == null) {
+        if (selectedClass == null) {
             return;
         }
 
         textField.setText(selectedClass.getName() + appendToClassName);
     }
 
+    private JComponent createMethodList(PsiClass aClass) {
+        CollectionListModel<PsiMethod> methods = new CollectionListModel<PsiMethod>(aClass.getAllMethods());
+
+        methodList = new JBList(methods);
+        DefaultPsiElementCellRenderer cellRenderer = new DefaultPsiElementCellRenderer();
+        methodList.setCellRenderer(cellRenderer);
+        methodList.setSelectionInterval(0, methods.getSize() - 1);
+
+        ToolbarDecorator decorator = ToolbarDecorator.createDecorator(methodList);
+        decorator.disableAddAction();
+        return decorator.createPanel();
+    }
+
     private PsiPackage getPackage(PsiClass aClass) {
-        String packageName = ((PsiJavaFile)aClass.getContainingFile()).getPackageName();
+        String packageName = ((PsiJavaFile) aClass.getContainingFile()).getPackageName();
         return JavaPsiFacade.getInstance(project).findPackage(packageName);
     }
 }

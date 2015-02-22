@@ -1,5 +1,7 @@
 package be.wendelen.daan.dtoGenerator.ui;
 
+import com.intellij.ui.components.JBList;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,6 +15,7 @@ public class DialogContentFactory {
     private JTextField dtoNameTextField;
     private JTextField mapperNameTextField;
     private JCheckBox generateMapperTest;
+    private JComponent methodSelector;
 
     private DialogContentFactory(){}
 
@@ -45,6 +48,7 @@ public class DialogContentFactory {
             generateMapperTest.setEnabled(false);
         }
         addTwoColumn(generateMapperTest);
+        addMethodList(methodSelector);
 
         return jPanel;
     }
@@ -86,6 +90,19 @@ public class DialogContentFactory {
         jPanel.add(jComponent, gridBagConstraints);
     }
 
+    private void addMethodList(JComponent jComponent) {
+        jComponent.setAlignmentX(Component.LEFT_ALIGNMENT);
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.weightx = 1;
+        gridBagConstraints.weighty = 1;
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.gridwidth = GridBagConstraints.NONE;
+        gridBagConstraints.gridheight = GridBagConstraints.REMAINDER;
+        jPanel.add(jComponent, gridBagConstraints);
+    }
+
     public static Builder newDialogContent() {
         return new Builder();
     }
@@ -121,6 +138,10 @@ public class DialogContentFactory {
             dialogContentFactory.generateMapperTest = generateMapperTest;
             return this;
         }
+        public Builder withMethodSelector(JComponent methodSelector) {
+            dialogContentFactory.methodSelector = methodSelector;
+            return this;
+        }
 
         public DialogContentFactory build() {
             if(dialogContentFactory.classSelector == null ||
@@ -128,7 +149,8 @@ public class DialogContentFactory {
                     dialogContentFactory.mapperPackageSelector == null ||
                     dialogContentFactory.dtoNameTextField == null ||
                     dialogContentFactory.mapperNameTextField == null ||
-                    dialogContentFactory.generateMapperTest == null) {
+                    dialogContentFactory.generateMapperTest == null ||
+                    dialogContentFactory.methodSelector == null) {
                 throw new IllegalStateException("None can be null");
             }
             return dialogContentFactory;
